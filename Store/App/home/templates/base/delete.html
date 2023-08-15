@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+
+
+{% block content %}
+<form action="" method="POST">
+    {% csrf_token %}
+    {{form.as_p}}
+
+    <a href="{% url 'home' %}"> GO back</a>
+    <input type="submit" value="confirm">
+</form>
+    
+{% endblock content %}
+    
