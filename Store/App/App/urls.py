@@ -13,5 +13,6 @@ urlpatterns = [
     path('room/<str:pk>' , room , name="room"),
     path('createroom' , createroom, name='createroom'),
     path('updateroom/<str:pk>/', updateRoom , name='updateroom'),
-    path('deleteroom/<str:pk>/' , deleteroom , name="deleteroom")
+    path('deleteroom/<str:pk>/' , deleteroom , name="deleteroom"),
+    path('delete_comment/<str:pk>/' , delete_comment, name='delete_comment')
 ]

@@ -1,17 +1,100 @@
-{% extends 'main.html' %}
-
 
 {% block content %}
 
-<h1>{{room.name}}</h1>
+<style>
+    .room_container{
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+    }
+</style>
 
-<p>{{room.discriptions}}</p>
 
-<div class="comment-wrapper">
-    <h3>Conversation</h3>
-    hr
+<h1>
+    <a href="{% url 'home' %}">HOME</a>
+</h1>
 
+<div class="room_container">
+
+
+    <div>
+
+    
+
+        <h1>{{room.name}}</h1>
+
+        <p>{{room.discriptions}}</p>
+
+        <div class="comment-wrapper">
+            <h3>Conversation</h3>
+
+            <hr>
+
+            
+            {% for  message in Roommessages  %}
+            <div>
+                
+                {% if request.user == message.user %}
+                    
+               
+                <a href="{% url 'delete_comment'  message.id %}">delete</a>
+
+                
+                {% endif %}
+                    
+
+                <small>@{{message.user}} {{message.update|timesince}}</small>
+
+                <p>{{message.body}}</p>
+
+            </div>
+                
+
+
+            {% endfor %}
+                
+
+
+
+
+        </div>
+
+
+        {% if request.user.is_authenticated %}
+            
+
+
+        <div class="comment">
+
+
+            <form action="" method="POST">
+                {% csrf_token %}
+                
+                <input type="text" name="body" placeholder="Writ your message">
+
+                <input type="submit" value="send">
+
+
+            </form>
+
+        </div>
+        {% endif %}
+
+
+    </div>
+
+    <div>
+        <h3>perticipants</h3><br>
+
+        
+        {% for user in participants  %}
+            <div>
+                <p>@{{user.username}}</p>
+            </div>
+        {% endfor %}
+            
+    </div>
 </div>
+    
 
     
 {% endblock content %}

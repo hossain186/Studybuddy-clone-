@@ -1,5 +1,5 @@
 from django.shortcuts import render , redirect
-from .models import Room , Topic
+from .models import Room , Topic, Message
 from .form import RoomForm
 from django.contrib.auth.models import User
 from  django.contrib.auth import authenticate , login, logout
@@ -20,7 +20,7 @@ def loginRoom(request):
         return redirect('home')
 
     if request.method == 'POST':
-        username = request.POST.get('username').lower()
+        username = request.POST.get('username')
         password = request.POST.get('password')
 
         try:
@@ -87,9 +87,26 @@ def home(request ):
 def room(request, pk ):
 
     room = Room.objects.get(id = pk)
-    messages = room.message_set.all()
 
-    context = {'room' : room ,"messages" :messages }
+    Roommessages = room.message_set.all().order_by('-update')
+
+    participants = room.participents.all()
+
+    if request.method == 'POST':
+
+        messag = Message.objects.create(
+            user = request.user,
+            room = room ,
+            body = request.POST['body']
+
+        )
+        room.participents.add(request.user)
+        return redirect('room' , pk= room.id)
+
+    
+
+
+    context = {'room' : room ,"Roommessages" :Roommessages , 'participants' :participants}
     return render(request , 'base/room.html' ,context)
 
 @login_required(login_url='login')
@@ -145,4 +162,22 @@ def deleteroom(request,  pk):
         return redirect('home')
     
     return render(request, "base/delete.html" , {'obj':room})
+
+
+@login_required(login_url='login')
+def delete_comment(request,  pk):
+
+    message = Message.objects.get(id = pk)
+    if request.user != message.user:
+        return HttpResponse('you cat not delete comment')
+    
+    if request.method == "POST":
+        message.delete()
+
+        return redirect('home' )
+    
+    return render(request, 'base/delete.html')
+    
+    
+    
 
