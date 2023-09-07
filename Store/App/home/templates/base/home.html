@@ -6,7 +6,7 @@
 <style>
     .container{
         display: grid;
-        grid-template-columns: 1fr 2fr;
+        grid-template-columns: 1fr 2fr 1fr;
     }
 </style>
 
@@ -54,6 +54,39 @@
         {% endfor %}
           
     </div>
+
+    <div>
+        <h3>Recent Activity</h3>
+        <hr>
+
+        
+        {% for message in  roommassage  %}
+
+        <div>
+
+            
+            {% if request.user == message.user %}
+                
+            
+                
+            <a href="{% url 'delete_comment' message.id %}">delete</a>
+
+            {% endif %}
+            <small>@{{message.user}} {{message.created|timesince}}</small>
+
+            <small>
+                replied to "{{message.room}}"
+            </small>
+
+            <p>{{message.body}}</p>
+        </div>
+            
+        {% endfor %}
+            
+    </div>
+
+
+
 </div>
     
 {% endblock content %}
